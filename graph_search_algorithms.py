@@ -113,7 +113,7 @@ class WeightedGraphSearchAlgorithms:
         return res
 
     @staticmethod
-    def dijkstra(graph, start):
+    def dijkstra(graph, start=0):
         if graph.negative_edge:
             return None
         matrix = [[float('inf') for _ in range(graph.vertex_count)] for _ in range(graph.vertex_count)]
