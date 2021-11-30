@@ -1,6 +1,5 @@
 import queue
 
-
 class GraphSearchAlgorithms:
 
     def __init__(self, vertex_count=0, edges=[], oriented=False):

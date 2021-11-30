@@ -46,7 +46,40 @@ def get_connected_graph_without_negative_edges(n, is_weighted):
     graph = get_tree_without_negative_edges(n, is_weighted)
     for i in range(random.randint(0, min(100500, n * (n - 1) // 2))):
         if is_weighted:
-            graph.add((random.randint(0, n - 1), random.randint(0, n - 1), random.randint(0, 500000000)))
+            graph.append((random.randint(0, n - 1), random.randint(0, n - 1), random.randint(0, 500000000)))
         else:
-            graph.add((random.randint(0, n - 1), random.randint(0, n - 1)))
+            graph.append((random.randint(0, n - 1), random.randint(0, n - 1)))
     return graph
+
+
+def get_chain(n):
+    graph = set()
+    for i in range(n - 1):
+        graph.add((i, i + 1))
+    return list(graph)
+
+def get_weighted_chain(n):
+    graph = set()
+    for i in range(n - 1):
+        graph.add((i, i + 1,random.randint(0, 500000000)))
+    return list(graph)
+
+
+def get_dense_graph(n):
+    graph = set()
+    for i in range(n - 1):
+        graph.add((i, i + 1))
+    for i in range(n - 1):
+        for j in range(i):
+            graph.add((i, j))
+    return list(graph)
+
+
+def get_dense_weighted_graph(n):
+    graph = set()
+    for i in range(n - 1):
+        graph.add((i, i + 1, random.randint(0, 500000000)))
+    for i in range(n - 1):
+        for j in range(i):
+            graph.add((i, j, random.randint(0, 500000000)))
+    return list(graph)
