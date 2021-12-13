@@ -1,4 +1,7 @@
 import queue
+from graphviz import Digraph
+from graphviz import Source
+
 
 class GraphSearchAlgorithms:
 
@@ -69,6 +72,22 @@ class GraphSearchAlgorithms:
                     parents[next_vertex] = vertex
                     vertex_queue.put(next_vertex)
         return None
+
+    @staticmethod
+    def show_graph(graph, path, name):
+        graph_ = Digraph(name, comment='Graph')
+        edges = set()
+        for i in range(len(graph.adjacent_vertices)):
+            graph_.node(str(i), str(i))
+            for j in graph.adjacent_vertices[i]:
+                edges.add((str(i), str(j)))
+        for i in range(len(path) - 1):
+            graph_.edge(str(path[i]), str(path[i + 1]), color='red')
+            edges.remove((str(path[i]), str(path[i + 1])))
+        for i in edges:
+            graph_.edge(i[0], i[1])
+        graph_.render(view=True)
+
 
 class WeightedGraphSearchAlgorithms:
 
@@ -141,3 +160,44 @@ class WeightedGraphSearchAlgorithms:
                     min_vertex = j
         return distance
 
+    @staticmethod
+    def dijkstra_with_path(graph, start, end):
+        if graph.negative_edge:
+            return None
+        parents = [-1] * graph.vertex_count
+        parents[start] = -2
+        distance = [float('inf')] * graph.vertex_count
+        distance[start] = 0
+        q = queue.PriorityQueue()
+        q.put((0, start))
+        while not q.empty():
+            dist, vertex = q.get()
+            if dist > distance[vertex]:
+                continue
+            if vertex == end:
+                break
+            for next in graph.adjacent_vertices[vertex]:
+                if distance[next[0]] > distance[vertex] + next[1]:
+                    parents[next[0]] = vertex
+                    distance[next[0]] = distance[vertex] + next[1]
+                    q.put((distance[next[0]], next[0]))
+        return distance[end], GraphSearchAlgorithms.restore_path(parents, start, end)
+
+    @staticmethod
+    def show_graph(graph, path, name):
+        graph_ = Digraph(name, comment='Graph')
+        edges = set()
+        for i in range(len(graph.adjacent_vertices)):
+            graph_.node(str(i), str(i))
+            for j in graph.adjacent_vertices[i]:
+                edges.add((str(i), str(j[0]), str(j[1])))
+        for i in range(len(path) - 1):
+            min_edge = float('inf')
+            for j in graph.adjacent_vertices[path[i]]:
+                if j[0] == path[i + 1] and min_edge > j[1]:
+                    min_edge = j[1]
+            graph_.edge(str(path[i]), str(path[i + 1]), label=str(min_edge), color='red')
+            edges.remove((str(path[i]), str(path[i + 1]), str(min_edge)))
+        for i in edges:
+            graph_.edge(i[0], i[1], label=i[2])
+        graph_.render(view=True)
